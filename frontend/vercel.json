@@ -3,6 +3,10 @@
     {
       "source": "/api/:path*",
       "destination": "https://rust-radar-q3ni.onrender.com/api/:path*"
+    },
+    {
+      "source": "/:path*",
+      "destination": "/index.html"
     }
   ]
 }
