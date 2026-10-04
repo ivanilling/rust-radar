@@ -1,0 +1,244 @@
+@import "tailwindcss";
+
+/* ============================================================
+   RUST RADAR — дизайн-система
+   Тёмная «тактическая» тема: стекло, мягкие тени, неоновые
+   акценты. Все поверхности — полупрозрачные, с backdrop-blur.
+   ============================================================ */
+
+@theme {
+  --color-void: #04060a;
+  --color-panel: #0b1016;
+  --color-panel2: #111823;
+  --color-edge: rgba(148, 197, 255, 0.09);
+  --color-neon: #34ff8f;
+  --color-neon-dim: #17553a;
+  --color-alert: #ff3b5c;
+  --color-alert-dim: #5c1a27;
+  --color-amber-neon: #ffb340;
+  --color-ghost: #8fa3b8;
+  --font-display: "Rajdhani", "Segoe UI", sans-serif;
+  --font-code: "JetBrains Mono", Consolas, monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+html,
+body {
+  background: var(--color-void);
+  color: #dbe6f0;
+  font-family: var(--font-display);
+  /* мягкая виньетка по краям экрана — добавляет глубину */
+  background-image: radial-gradient(1200px 800px at 50% -10%, rgba(52, 255, 143, 0.05), transparent 60%);
+}
+
+::selection {
+  background: rgba(52, 255, 143, 0.25);
+  color: #fff;
+}
+
+/* ---------- Стеклянные поверхности ---------- */
+
+/* базовое стекло: тёмная полупрозрачная панель с блюром */
+.glass {
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.018));
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow:
+    0 1px 0 0 rgba(255, 255, 255, 0.05) inset,
+    0 20px 50px -20px rgba(0, 0, 0, 0.6);
+}
+
+/* стекло с неоновым подтоном (для активных/акцентных панелей) */
+.glass-neon {
+  background: linear-gradient(160deg, rgba(52, 255, 143, 0.08), rgba(52, 255, 143, 0.02));
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  border: 1px solid rgba(52, 255, 143, 0.16);
+}
+
+/* верхняя «полировка» панели — тонкий блик по верхней кромке */
+.sheen {
+  position: relative;
+}
+.sheen::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.14), transparent);
+  pointer-events: none;
+}
+
+/* ---------- Текст ---------- */
+
+.neon-text-green {
+  text-shadow:
+    0 0 8px rgba(52, 255, 143, 0.75),
+    0 0 28px rgba(52, 255, 143, 0.35);
+}
+.neon-text-red {
+  text-shadow:
+    0 0 8px rgba(255, 59, 92, 0.75),
+    0 0 24px rgba(255, 59, 92, 0.35);
+}
+
+/* градиентный «дорогой» заголовок */
+.grad-text {
+  background: linear-gradient(100deg, #e8fff3 0%, #34ff8f 45%, #2bd4ff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ---------- Свечения и тени ---------- */
+
+.glow-green {
+  box-shadow:
+    0 0 0 1px rgba(52, 255, 143, 0.25),
+    0 8px 40px -8px rgba(52, 255, 143, 0.22),
+    inset 0 0 30px rgba(52, 255, 143, 0.04);
+}
+.glow-red {
+  box-shadow:
+    0 0 0 1px rgba(255, 59, 92, 0.22),
+    0 8px 32px -10px rgba(255, 59, 92, 0.18);
+}
+.glow-amber {
+  box-shadow:
+    0 0 0 1px rgba(255, 179, 64, 0.28),
+    0 8px 32px -10px rgba(255, 179, 64, 0.16);
+}
+
+/* ---------- Сетка-фон и сканлайны ---------- */
+
+.grid-bg {
+  background-image:
+    linear-gradient(rgba(148, 197, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 197, 255, 0.035) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, black 40%, transparent 100%);
+}
+
+.scanlines::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 50;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0px,
+    transparent 3px,
+    rgba(0, 0, 0, 0.12) 4px,
+    transparent 5px
+  );
+  opacity: 0.5;
+}
+
+/* ---------- Радар-кольца и луч ---------- */
+
+@keyframes radar-ping {
+  0% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  80%,
+  100% {
+    transform: scale(2.05);
+    opacity: 0;
+  }
+}
+.radar-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 0.75rem;
+  border: 1.5px solid var(--color-neon);
+  animation: radar-ping 2.6s cubic-bezier(0, 0, 0.2, 1) infinite;
+  pointer-events: none;
+}
+
+.radar-sweep {
+  background: conic-gradient(
+    from 0deg,
+    rgba(52, 255, 143, 0.55) 0deg,
+    rgba(52, 255, 143, 0.08) 60deg,
+    transparent 120deg,
+    transparent 360deg
+  );
+  animation: spin 2.6s linear infinite;
+}
+
+/* ---------- Кнопка с «бликом-пробегом» ---------- */
+
+.btn-shine {
+  position: relative;
+  overflow: hidden;
+}
+.btn-shine::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 42%, rgba(255, 255, 255, 0.18) 50%, transparent 58%);
+  transform: translateX(-120%);
+  transition: transform 0.7s ease;
+  pointer-events: none;
+}
+.btn-shine:hover::after {
+  transform: translateX(120%);
+}
+
+/* ---------- Прочее ---------- */
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes floaty {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.15;
+  }
+  50% {
+    transform: translateY(-26px);
+    opacity: 0.55;
+  }
+}
+
+/* вход панелей: ТОЛЬКО трансформация — карточка никогда не бывает прозрачной
+   (opacity-анимации могут залипать в фоне/при экономии батареи) */
+.fade-in {
+  animation: fadeIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes fadeIn {
+  from {
+    transform: translateY(16px) scale(0.985);
+  }
+  to {
+    transform: translateY(0) scale(1);
+  }
+}
+
+::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 197, 255, 0.14);
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(52, 255, 143, 0.3);
+  background-clip: content-box;
+}

@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://ЗАМЕНИ-НА-АДРЕС-БЭКЕНДА.onrender.com/api/:path*"
+    }
+  ]
+}
